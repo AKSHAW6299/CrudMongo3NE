@@ -1,14 +1,24 @@
 import express from 'express'
 import connectToDB from './db.js'
 import UserRoutes from './routes/user.js'
+import morgan from 'morgan'
+import cors from 'cors'
 
 const app = express()
 const PORT = process.env.PORT || 5000
 
+////////////////////////////////////////////////////////
+// 1) morgan, A third party middleware to log any http request.
+app.use(morgan('dev'))
+
+// 2) Enable CORS to use this API anywhere
+app.use(cors())
+////////////////////////////////////////////////////////
+
 // 1) Call DB connection
 connectToDB()
 
-// 2) Middleware to parse JSON
+// 2) Built-in Middleware to parse JSON
 app.use(express.json());  // <--- Use this here
 
 // OPTIONAL NOT MANDATORY

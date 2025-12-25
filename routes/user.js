@@ -6,7 +6,7 @@ const router = express.Router();
 
 // 1) READ all users (GET /api/users)
 router.get('/', async (req, res) => {
-    console.log('GET REQUEST...');
+    // console.log('GET REQUEST...');
     try {
         // getting all users from DB!
         const users = await User.find();
@@ -20,7 +20,7 @@ router.get('/', async (req, res) => {
 
 // 2) CREATE a new user (POST /api/users)
 router.post('/', async (req, res) => {
-    console.log('POST REQUEST...');
+    // console.log('POST REQUEST...');
     try {
         const { name, age, city, weight } = req.body;    // getting data from [req.body]
         const newUser = new User({ name, age, city, weight });
@@ -33,7 +33,7 @@ router.post('/', async (req, res) => {
 
 // 3) READ single user by ID (GET /api/users/:id)
 router.get('/:id', async (req, res) => {
-    console.log('GET REQUEST BY ID...');
+    // console.log('GET REQUEST BY ID...');
     try {
         const user = await User.findById(req.params.id);
         if (!user) {
@@ -47,7 +47,7 @@ router.get('/:id', async (req, res) => {
 
 // 4) UPDATE user by ID (PUT /api/users/:id)
 router.put('/:id', async (req, res) => {
-    console.log('PUT REQUEST...');
+    // console.log('PUT REQUEST...');
     try {
         const { name, age, city, weight } = req.body;
         const updatedUser = await User.findByIdAndUpdate(
@@ -70,7 +70,7 @@ router.put('/:id', async (req, res) => {
 // 5) PATCH user by ID (PATCH /api/users/:id)
 // Partial object (only changed fields)
 router.patch('/:id', async (req, res) => {
-    console.log('PATCH REQUEST...');
+    // console.log('PATCH REQUEST...');
     try {
         const updates = req.body;
         const updatedUser = await User.findByIdAndUpdate(
@@ -92,7 +92,7 @@ router.patch('/:id', async (req, res) => {
 
 // 6) DELETE user by ID (DELETE /api/users/:id)
 router.delete('/:id', async (req, res) => {
-    console.log('DELETE REQUEST...');
+    // console.log('DELETE REQUEST...');
     try {
         const deletedUser = await User.findByIdAndDelete(req.params.id);
         if (!deletedUser) {
