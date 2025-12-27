@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import ownMongoosePaginate from 'mongoose-paginate-v2'
 
 // STEP1 => We are creating Schema here
 // we are directly using here [Schema & model] from mongoose
@@ -27,6 +28,9 @@ const UserSchema = new mongoose.Schema(
         }
     }
 );
+
+// For pagination
+UserSchema.plugin(ownMongoosePaginate)
 
 // STEP2 => We are creating Model using the Schema
 // Model name will be "UserModel" and collection(TABLE) will be "Players"

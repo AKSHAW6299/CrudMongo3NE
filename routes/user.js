@@ -4,23 +4,52 @@ import User from '../models/user.model.js'
 // Creating a router
 const router = express.Router();
 
-// 1) READ all users (GET /api/users)
+// // 1) READ all users GET => [http://localhost:3000/api/]
+// router.get('/', async (req, res) => {
+//     try {
+//         // getting all users from DB!
+//         const users = await User.find();
+//         const totalCount = users.length;
+//         // sending all the users as response!
+//         res.status(200).json({ users, success: true, isLogin: true, totalCount });
+//     } catch (err) {
+//         res.status(500).json({ success: false, error: err.message });
+//     }
+// });
+
+// API testing url => [http://localhost:3000/api/?page=1&limit=6]
 router.get('/', async (req, res) => {
-    // console.log('GET REQUEST...');
     try {
-        // getting all users from DB!
-        const users = await User.find();
-        const totalCount = users.length;
-        // sending all the users as response!
-        res.status(200).json({ users, success: true, isLogin: true, totalCount });
+        // 1️) Get page & limit from query
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 10;
+
+        // 2️) Calculate skip
+        const skip = (page - 1) * limit;
+
+        // 3️) Fetch users with pagination
+        const users = await User.find()
+            .skip(skip)
+            .limit(limit);
+
+        // 4️) Get total count
+        const totalUsers = await User.countDocuments();
+        // 5️) Send response
+        res.status(200).json({
+            success: true,
+            currentPage: page,
+            totalPages: Math.ceil(totalUsers / limit),
+            totalUsers,
+            users
+        });
     } catch (err) {
         res.status(500).json({ success: false, error: err.message });
     }
 });
 
-// 2) CREATE a new user (POST /api/users)
+
+// 2) CREATE a new user, POST => [http://localhost:3000/api]
 router.post('/', async (req, res) => {
-    // console.log('POST REQUEST...');
     try {
         const { name, age, city, weight } = req.body;    // getting data from [req.body]
         const newUser = new User({ name, age, city, weight });
@@ -31,9 +60,8 @@ router.post('/', async (req, res) => {
     }
 });
 
-// 3) READ single user by ID (GET /api/users/:id)
+// 3) READ single user by ID, GET => [http://localhost:3000/api/:id]
 router.get('/:id', async (req, res) => {
-    // console.log('GET REQUEST BY ID...');
     try {
         const user = await User.findById(req.params.id);
         if (!user) {
@@ -43,11 +71,10 @@ router.get('/:id', async (req, res) => {
     } catch (err) {
         res.status(500).json({ success: false, error: err.message });
     }
-}); 
+});
 
-// 4) UPDATE user by ID (PUT /api/users/:id)
+// 4) UPDATE user by ID, PUT => [http://localhost:3000/api/:id]
 router.put('/:id', async (req, res) => {
-    // console.log('PUT REQUEST...');
     try {
         const { name, age, city, weight } = req.body;
         const updatedUser = await User.findByIdAndUpdate(
@@ -67,10 +94,9 @@ router.put('/:id', async (req, res) => {
     }
 });
 
-// 5) PATCH user by ID (PATCH /api/users/:id)
+// 5) PATCH user by ID, PATCH => [http://localhost:3000/api/:id]
 // Partial object (only changed fields)
 router.patch('/:id', async (req, res) => {
-    // console.log('PATCH REQUEST...');
     try {
         const updates = req.body;
         const updatedUser = await User.findByIdAndUpdate(
@@ -90,9 +116,8 @@ router.patch('/:id', async (req, res) => {
     }
 });
 
-// 6) DELETE user by ID (DELETE /api/users/:id)
+// 6) DELETE user by ID, DELETE => [http://localhost:3000/api/:id]
 router.delete('/:id', async (req, res) => {
-    // console.log('DELETE REQUEST...');
     try {
         const deletedUser = await User.findByIdAndDelete(req.params.id);
         if (!deletedUser) {
